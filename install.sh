@@ -406,7 +406,7 @@ mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"; \
 mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"/logs/gclog
 
 # mysql-connector 복사
-wget -P ~/"${CATALINA_BASE_NAME}"/lib https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-5.1.26-bin.jar
+wget -P ~/"${CATALINA_HOME_NAME}"/lib https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-5.1.26-bin.jar
 
 # tomcat start
 "${CATALINA_BASE_NAME}"/bin/startup.sh
