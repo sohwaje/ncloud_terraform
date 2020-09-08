@@ -29,14 +29,14 @@ export JAVA_OPTS="$JAVA_OPTS -DconnectionTimeout=30000"
 
 
 #[4] Directory Setup #####
-export SERVER_NAME=eletter
-export JAVA_OPTS="$JAVA_OPTS -Dserver=eletter"
-export CATALINA_HOME="/home/sigongweb/tomcat7"
-export CATALINA_BASE="/home/sigongweb/eletter_tomcat7"
+export SERVER_NAME=gneerbank
+export JAVA_OPTS="$JAVA_OPTS -Dserver=gneerbank"
+export CATALINA_HOME="/home/gneerbank/tomcat7"
+export CATALINA_BASE="/home/gneerbank/gneerbank"
 export JAVA_HOME="/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.232.b09-0.el7_7.x86_64"
 export LOG_HOME=$CATALINA_BASE/logs
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CATALINA_HOME/lib
-export SCOUTER_AGENT_DIR="/home/sigongweb/work/agent.java"
+# export SCOUTER_AGENT_DIR="/home/sigongweb/work/agent.java"
 
 #[5] JVM Options : Memory
 export JAVA_OPTS="$JAVA_OPTS -Xms4096m"
