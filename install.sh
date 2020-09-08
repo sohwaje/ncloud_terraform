@@ -196,5 +196,18 @@ sudo systemctl daemon-reload && sudo systemctl start node_exporter && sudo syste
 # prometheus reload
 sudo curl -X POST http://10.1.12.6:9090/-/reload
 
-# tomcat 7
-wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/apache-tomcat-7.0.90.tar.gz
+# Install tomcat 7
+SOURCE_DIR="webapps"
+TOMCAT_FILE="apache-tomcat-7.0.90.tar.gz"
+USER="gneerbank"
+CATALINA_BASE="gneerbank"
+CATALINA_HOME="tomcat7"
+
+sudo groupadd "${USER}"
+sudo useradd -g "${USER}" -s /usr/sbin/nologin "${USER}"
+
+cd ~ \
+wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${TOMCAT_FILE}" -O tomcat7.tar.gz && mkdir tomcat7 \
+tar xvfz tomcat7.tar.gz -C tomcat7 \
+cp -ar tomcat7 "${CATALINA_BASE}" \
+rm -f tomcat7.tar.gz
