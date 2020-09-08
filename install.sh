@@ -1,5 +1,5 @@
 #!/bin/sh
-#!/bin/sh
+
 # change date timezone into Asia/seoul
 sudo ln -sf /usr/share/zoneinfo/Asia/Seoul /etc/localtime
 sudo timedatectl set-timezone Asia/Seoul
