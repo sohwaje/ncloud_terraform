@@ -403,10 +403,11 @@ mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"; \
 </Context>" > ~/"${CATALINA_BASE_NAME}"/conf/Catalina/localhost/ROOT.xml
 
 # gclog 디렉토리 생성
-mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"/logs/gclog
+mkdir -p ~/"${CATALINA_BASE_NAME}"/logs/gclog
 
 # mysql-connector 복사
-wget -P ~/"${CATALINA_HOME_NAME}"/lib https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-5.1.26-bin.jar
+wget -P ~/"${CATALINA_HOME_NAME}"/lib https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-8.0.21.tar.gz
+tar xvfz ~/"${CATALINA_HOME_NAME}"/lib/mysql-connector-java-8.0.21.tar.gz
 
 # tomcat start
 "${CATALINA_BASE_NAME}"/bin/startup.sh
