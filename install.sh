@@ -201,7 +201,6 @@ SOURCE_DIR="webapps"
 CATALINA_BASE="apache-tomcat-7.0.90"
 CATALINA_HOME_DIR="gneerbank"
 
-
 cd ~ \
 wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_BASE}".tar.gz; \
   tar xvfz "${CATALINA_BASE}".tar.gz; \
@@ -211,20 +210,21 @@ wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_BAS
 wget -P \
   ~/"${CATALINA_HOME_DIR}"/bin https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/setenv.sh; \
   chmod +x ~/"${CATALINA_HOME_DIR}"/bin/setenv.sh
+
 wget -P \
-  ~/"${CATALINA_HOME_DIR}"/conf
-mkdir ~/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}" \
-  mkdir ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost \
+  ~/"${CATALINA_HOME_DIR}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
+
+# tomcat database
+mkdir ~/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"; \
+  mkdir -p ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost; \
   bash -c "cat << EOF > ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost/ROOT.xml
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!-- 1. 소스 경로 -->
-<Context path="" docBase="/home/azureuser/webapps/gneerbank/" reloadable="false"
+<Context path="" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"/ reloadable="false"
          privileged="true" antiResourceLocking="false" antiJARLocking="false">
-
 <!-- 2. DB 정보 -->
-
-    <Resource name="jdbc/cookeeDS" auth="Container"
+    <Resource name="jdbc/gneerbankDS" auth="Container"
               type="javax.sql.DataSource"
               driverClassName="com.mysql.jdbc.Driver"
               validationQuery="SELECT 1"
