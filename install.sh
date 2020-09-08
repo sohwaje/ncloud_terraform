@@ -194,32 +194,201 @@ EOF"
 sudo systemctl daemon-reload && sudo systemctl start node_exporter && sudo systemctl enable node_exporter
 
 # prometheus reload
-sudo curl -X POST http://10.1.12.6:9090/-/reload
+# sudo curl -X POST http://10.1.12.6:9090/-/reload
 
-# Install tomcat 7
+# Tomcat configuration
+## 변수 설정
 SOURCE_DIR="webapps"
-CATALINA_BASE="apache-tomcat-7.0.90"
-CATALINA_HOME_DIR="gneerbank"
+CATALINA_HOME_NAME="apache-tomcat-7.0.90"
+CATALINA_BASE_MAME="gneerbank"
 
-cd ~ \
-wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_BASE}".tar.gz; \
-  tar xvfz "${CATALINA_BASE}".tar.gz; \
-  cp -ar "${CATALINA_BASE}" "${CATALINA_HOME_DIR}"; \
-  rm -f "${CATALINA_BASE}".tar.gz
+# Install tomcat7
+cd ~; \
+wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_HOME_NAME}".tar.gz; \
+  tar xvfz "${CATALINA_HOME_NAME}".tar.gz; \
+  cp -ar "${CATALINA_HOME_NAME}" "${CATALINA_BASE_MAME}"; \
+  rm -f "${CATALINA_HOME_NAME}".tar.gz
 
+# 톰캣 환경 변수 설정
+echo "export CATALINA_BASE=${HOME}/${CATALINA_BASE_NAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
+echo "export CATALINA_HOME=${HOME}/${CATALINA_HOME_MAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
+
+echo '''export DATE=`date +%Y%m%d%H%M%S`
+#[2] TOMCAT Port & values
+# Tomcat Port 설정
+export PORT_OFFSET=0
+export HTTP_PORT=$(expr 8080 + $PORT_OFFSET)
+export AJP_PORT=$(expr 8009 + $PORT_OFFSET)
+export SSL_PORT=$(expr 8443 + $PORT_OFFSET)
+export SHUTDOWN_PORT=$(expr 8005 + $PORT_OFFSET)
+
+# Tomcat Threads 설정
+export JAVA_OPTS="$JAVA_OPTS -DmaxThreads=300"
+export JAVA_OPTS="$JAVA_OPTS -DminSpareThreads=50"
+export JAVA_OPTS="$JAVA_OPTS -DacceptCount=10"
+export JAVA_OPTS="$JAVA_OPTS -DmaxKeepAliveRequests=-1"
+export JAVA_OPTS="$JAVA_OPTS -DconnectionTimeout=30000"
+
+#[4] Directory Setup #####
+export SERVER_NAME=gneerbank
+export JAVA_OPTS="$JAVA_OPTS -Dserver=gneerbank"
+export JAVA_HOME="/etc/alternatives/jre_1.8.0_openjdk"
+export LOG_HOME=$CATALINA_BASE/logs
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CATALINA_HOME/lib
+# export SCOUTER_AGENT_DIR="/home/sigongweb/work/agent.java"
+
+#[5] JVM Options : Memory
+export JAVA_OPTS="$JAVA_OPTS -Xms4096m"
+export JAVA_OPTS="$JAVA_OPTS -Xmx4096m"
+export JAVA_OPTS="$JAVA_OPTS -XX:NewSize=256m"
+export JAVA_OPTS="$JAVA_OPTS -Xss512k"
+
+#[6] Parallel GC OPTIONS ###
+export JAVA_OPTS="$JAVA_OPTS -XX:+UseParallelOldGC "
+export JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=\"utf-8\""
+
+#[7] JVM Option GCi log, Stack Trace, Dump
+export JAVA_OPTS="$JAVA_OPTS -verbose:gc"
+export JAVA_OPTS="$JAVA_OPTS -XX:+PrintGCTimeStamps"
+export JAVA_OPTS="$JAVA_OPTS -XX:+PrintGCDetails "
+export JAVA_OPTS="$JAVA_OPTS -Xloggc:$LOG_HOME/gclog/gc_$DATE.log"
+export JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
+export JAVA_OPTS="$JAVA_OPTS -XX:HeapDumpPath=$LOG_HOME/gclog/java_pid.hprof"
+export JAVA_OPTS="$JAVA_OPTS -XX:+DisableExplicitGC"
+export JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom"
+export JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"
+
+export JAVA_OPTS="$JAVA_OPTS -Dhttp.port=$HTTP_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Dajp.port=$AJP_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Dssl.port=$SSL_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Dshutdown.port=$SHUTDOWN_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$CATALINA_HOME/lib/"
+export JAVA_OPTS
+echo "================================================"
+echo "JAVA_HOME=$JAVA_HOME"
+echo "CATALINA_HOME=$CATALINA_HOME"
+echo "SERVER_HOME=$CATALINA_BASE"
+echo "HTTP_PORT=$HTTP_PORT"
+echo "SSL_PORT=$SSL_PORT"
+echo "AJP_PORT=$AJP_PORT"
+echo "SHUTDOWN_PORT=$SHUTDOWN_PORT"
+echo "================================================"
+''' >> ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
+chmod +x ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
+
+# server.xml 복사
+rm -f ~/"${CATALINA_BASE_MAME}"/conf/server.xml
 wget -P \
-  ~/"${CATALINA_HOME_DIR}"/bin https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/setenv.sh; \
-  chmod +x ~/"${CATALINA_HOME_DIR}"/bin/setenv.sh
+  ~/"${CATALINA_BASE_MAME}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
 
+# tomcat database 설정
+mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
+  mkdir -p ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost; \
+#   echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+#   <!-- 1. 소스 경로 -->
+# <Context path=\"\" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"/ reloadable=\"false\"
+#          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
+# <!-- 2. DB 정보 -->
+#     <Resource name=\"jdbc/gneerbankDS\" auth=\"Container\"
+#               type=\"javax.sql.DataSource\"
+#               driverClassName=\"com.mysql.jdbc.Driver\"
+#               validationQuery=\"SELECT 1\"
+#               validationInterval=\"30000\"
+#               url=""
+#               username=\"gneerbank\"
+#               password=\"gneerbank\"
+#               maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
+# </Context>" > ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost/ROOT.xml
+
+SOURCE_DIR="webapps"
+CATALINA_HOME_NAME="apache-tomcat-7.0.90"
+CATALINA_BASE_MAME="gneerbank"
+
+# Install tomcat7
+cd ~; \
+wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_HOME_NAME}".tar.gz; \
+  tar xvfz "${CATALINA_HOME_NAME}".tar.gz; \
+  cp -ar "${CATALINA_HOME_NAME}" "${CATALINA_BASE_MAME}"; \
+  rm -f "${CATALINA_HOME_NAME}".tar.gz
+
+# 톰캣 환경 변수 설정
+echo "export CATALINA_BASE=${HOME}/${CATALINA_BASE_NAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
+echo "export CATALINA_HOME=${HOME}/${CATALINA_HOME_MAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
+
+echo '''export DATE=`date +%Y%m%d%H%M%S`
+#[2] TOMCAT Port & values
+# Tomcat Port 설정
+export PORT_OFFSET=0
+export HTTP_PORT=$(expr 8080 + $PORT_OFFSET)
+export AJP_PORT=$(expr 8009 + $PORT_OFFSET)
+export SSL_PORT=$(expr 8443 + $PORT_OFFSET)
+export SHUTDOWN_PORT=$(expr 8005 + $PORT_OFFSET)
+
+# Tomcat Threads 설정
+export JAVA_OPTS="$JAVA_OPTS -DmaxThreads=300"
+export JAVA_OPTS="$JAVA_OPTS -DminSpareThreads=50"
+export JAVA_OPTS="$JAVA_OPTS -DacceptCount=10"
+export JAVA_OPTS="$JAVA_OPTS -DmaxKeepAliveRequests=-1"
+export JAVA_OPTS="$JAVA_OPTS -DconnectionTimeout=30000"
+
+#[4] Directory Setup #####
+export SERVER_NAME=gneerbank
+export JAVA_OPTS="$JAVA_OPTS -Dserver=gneerbank"
+export JAVA_HOME="/etc/alternatives/jre_1.8.0_openjdk"
+export LOG_HOME=$CATALINA_BASE/logs
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CATALINA_HOME/lib
+# export SCOUTER_AGENT_DIR="/home/sigongweb/work/agent.java"
+
+#[5] JVM Options : Memory
+export JAVA_OPTS="$JAVA_OPTS -Xms4096m"
+export JAVA_OPTS="$JAVA_OPTS -Xmx4096m"
+export JAVA_OPTS="$JAVA_OPTS -XX:NewSize=256m"
+export JAVA_OPTS="$JAVA_OPTS -Xss512k"
+
+#[6] Parallel GC OPTIONS ###
+export JAVA_OPTS="$JAVA_OPTS -XX:+UseParallelOldGC "
+export JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=\"utf-8\""
+
+#[7] JVM Option GCi log, Stack Trace, Dump
+export JAVA_OPTS="$JAVA_OPTS -verbose:gc"
+export JAVA_OPTS="$JAVA_OPTS -XX:+PrintGCTimeStamps"
+export JAVA_OPTS="$JAVA_OPTS -XX:+PrintGCDetails "
+export JAVA_OPTS="$JAVA_OPTS -Xloggc:$LOG_HOME/gclog/gc_$DATE.log"
+export JAVA_OPTS="$JAVA_OPTS -XX:+HeapDumpOnOutOfMemoryError"
+export JAVA_OPTS="$JAVA_OPTS -XX:HeapDumpPath=$LOG_HOME/gclog/java_pid.hprof"
+export JAVA_OPTS="$JAVA_OPTS -XX:+DisableExplicitGC"
+export JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom"
+export JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"
+
+export JAVA_OPTS="$JAVA_OPTS -Dhttp.port=$HTTP_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Dajp.port=$AJP_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Dssl.port=$SSL_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Dshutdown.port=$SHUTDOWN_PORT"
+export JAVA_OPTS="$JAVA_OPTS -Djava.library.path=$CATALINA_HOME/lib/"
+export JAVA_OPTS
+echo "================================================"
+echo "JAVA_HOME=$JAVA_HOME"
+echo "CATALINA_HOME=$CATALINA_HOME"
+echo "SERVER_HOME=$CATALINA_BASE"
+echo "HTTP_PORT=$HTTP_PORT"
+echo "SSL_PORT=$SSL_PORT"
+echo "AJP_PORT=$AJP_PORT"
+echo "SHUTDOWN_PORT=$SHUTDOWN_PORT"
+echo "================================================"
+''' >> ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
+chmod +x ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
+
+# server.xml 복사
+rm -f ~/"${CATALINA_BASE_MAME}"/conf/server.xml
 wget -P \
-  ~/"${CATALINA_HOME_DIR}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
+  ~/"${CATALINA_BASE_MAME}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
 
-# tomcat database
-mkdir ~/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"; \
-  mkdir -p ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost; \
+# tomcat database 설정
+mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
+  mkdir -p ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost; \
   echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
   <!-- 1. 소스 경로 -->
-<Context path="" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"/ reloadable=\"false\"
+<Context path=\"\" docBase="\"${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"\" reloadable=\"false\"
          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
 <!-- 2. DB 정보 -->
     <Resource name=\"jdbc/gneerbankDS\" auth=\"Container\"
@@ -227,8 +396,14 @@ mkdir ~/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"; \
               driverClassName=\"com.mysql.jdbc.Driver\"
               validationQuery=\"SELECT 1\"
               validationInterval=\"30000\"
-              url=""
-              username=\"gneerbank\"
-              password=\"gneerbank\"
+              url=\"jdbc:mysql://10.1.3.4:3306/hiclass_stage_db?useUnicode=true&amp;characterEncoding=UTF-8&amp;characterSetResults=UTF-8&amp;useSSL=true&amp;serverTimezone=Asia/Seoul\"
+              username=\"class_user_stage\"
+              password=\"class@1904\"
               maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
-</Context>" > ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost/ROOT.xml
+</Context>" > ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost/ROOT.xml
+
+# gclog 디렉토리 생성
+mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"/logs/gclog
+
+# tomcat start
+"${CATALINA_BASE_MAME}"/bin/startup.sh
