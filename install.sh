@@ -207,7 +207,8 @@ sudo groupadd "${USER}"
 sudo useradd -g "${USER}" -s /usr/sbin/nologin "${USER}"
 
 cd ~ \
-wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${TOMCAT_FILE}" -O tomcat7.tar.gz && mkdir tomcat7 \
-tar xvfz tomcat7.tar.gz -C tomcat7 \
-cp -ar tomcat7 "${CATALINA_BASE}" \
-rm -f tomcat7.tar.gz
+mkdir -p tomcat7 \
+  wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${TOMCAT_FILE}" -O tomcat7.tar.gz \
+  tar xvfz tomcat7.tar.gz -C tomcat7 \
+  cp -ar tomcat7 "${CATALINA_BASE}" \
+  rm -f tomcat7.tar.gz
