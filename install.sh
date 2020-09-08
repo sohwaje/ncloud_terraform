@@ -312,8 +312,8 @@ wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_HOM
   rm -f "${CATALINA_HOME_NAME}".tar.gz
 
 # 톰캣 환경 변수 설정
-echo "export CATALINA_BASE=${HOME}/${CATALINA_BASE_NAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
-echo "export CATALINA_HOME=${HOME}/${CATALINA_HOME_MAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
+echo "export CATALINA_BASE=${HOME}/${CATALINA_BASE_NAME}" >> ~/"${CATALINA_HOME_NAME}"/bin/setenv.sh
+echo "export CATALINA_HOME=${HOME}/${CATALINA_HOME_MAME}" >> ~/"${CATALINA_HOME_NAME}"/bin/setenv.sh
 
 echo '''export DATE=`date +%Y%m%d%H%M%S`
 #[2] TOMCAT Port & values
@@ -391,7 +391,7 @@ mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
 <Context path=\"\" docBase="\"${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"\" reloadable=\"false\"
          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
 <!-- 2. DB 정보 -->
-    <Resource name=\"jdbc/gneerbankDS\" auth=\"Container\"
+    <Resource name=\"jdbc/elLetterMDS\" auth=\"Container\"
               type=\"javax.sql.DataSource\"
               driverClassName=\"com.mysql.jdbc.Driver\"
               validationQuery=\"SELECT 1\"
@@ -404,6 +404,9 @@ mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
 
 # gclog 디렉토리 생성
 mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"/logs/gclog
+
+# mysql-connector 복사
+wget -P   ~/"${CATALINA_BASE_MAME}"/lib https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-5.1.26-bin.jar
 
 # tomcat start
 "${CATALINA_BASE_MAME}"/bin/startup.sh
