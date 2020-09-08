@@ -198,17 +198,40 @@ sudo curl -X POST http://10.1.12.6:9090/-/reload
 
 # Install tomcat 7
 SOURCE_DIR="webapps"
-TOMCAT_FILE="apache-tomcat-7.0.90.tar.gz"
-USER="gneerbank"
-CATALINA_BASE="gneerbank"
-CATALINA_HOME="tomcat7"
+CATALINA_BASE="apache-tomcat-7.0.90"
+CATALINA_HOME_DIR="gneerbank"
 
-sudo groupadd "${USER}"
-sudo useradd -g "${USER}" -s /usr/sbin/nologin "${USER}"
 
 cd ~ \
-mkdir -p tomcat7 \
-  wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${TOMCAT_FILE}" -O tomcat7.tar.gz \
-  tar xvfz tomcat7.tar.gz -C tomcat7 \
-  cp -ar tomcat7 "${CATALINA_BASE}" \
-  rm -f tomcat7.tar.gz
+wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_BASE}".tar.gz; \
+  tar xvfz "${CATALINA_BASE}".tar.gz; \
+  cp -ar "${CATALINA_BASE}" "${CATALINA_HOME_DIR}"; \
+  rm -f "${CATALINA_BASE}".tar.gz
+
+wget -P \
+  ~/"${CATALINA_HOME_DIR}"/bin https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/setenv.sh; \
+  chmod +x ~/"${CATALINA_HOME_DIR}"/bin/setenv.sh
+wget -P \
+  ~/"${CATALINA_HOME_DIR}"/conf
+mkdir ~/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}" \
+  mkdir ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost \
+  bash -c "cat << EOF > ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost/ROOT.xml
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 1. 소스 경로 -->
+<Context path="" docBase="/home/azureuser/webapps/gneerbank/" reloadable="false"
+         privileged="true" antiResourceLocking="false" antiJARLocking="false">
+
+<!-- 2. DB 정보 -->
+
+    <Resource name="jdbc/cookeeDS" auth="Container"
+              type="javax.sql.DataSource"
+              driverClassName="com.mysql.jdbc.Driver"
+              validationQuery="SELECT 1"
+              validationInterval="30000"
+              url=""
+              username="gneerbank"
+              password="gneerbank"
+              maxActive="100" maxIdle="50" initialSize="30" maxWait="-1"/>
+</Context>
+EOF"
