@@ -200,18 +200,18 @@ sudo systemctl daemon-reload && sudo systemctl start node_exporter && sudo syste
 ## 변수 설정
 SOURCE_DIR="webapps"
 CATALINA_HOME_NAME="apache-tomcat-7.0.90"
-CATALINA_BASE_MAME="gneerbank"
+CATALINA_BASE_NAME="gneerbank"
 
 # Install tomcat7
 cd ~; \
 wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_HOME_NAME}".tar.gz; \
   tar xvfz "${CATALINA_HOME_NAME}".tar.gz; \
-  cp -ar "${CATALINA_HOME_NAME}" "${CATALINA_BASE_MAME}"; \
+  cp -ar "${CATALINA_HOME_NAME}" "${CATALINA_BASE_NAME}"; \
   rm -f "${CATALINA_HOME_NAME}".tar.gz
 
 # 톰캣 환경 변수 설정
-echo "export CATALINA_BASE=${HOME}/${CATALINA_BASE_NAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
-echo "export CATALINA_HOME=${HOME}/${CATALINA_HOME_MAME}" >> ~/"${CATALINA_HOME_MAME}"/bin/setenv.sh
+echo "export CATALINA_BASE=${HOME}/${CATALINA_BASE_NAME}" >> ~/"${CATALINA_HOME_NAME}"/bin/setenv.sh
+echo "export CATALINA_HOME=${HOME}/${CATALINA_HOME_NAME}" >> ~/"${CATALINA_HOME_NAME}"/bin/setenv.sh
 
 echo '''export DATE=`date +%Y%m%d%H%M%S`
 #[2] TOMCAT Port & values
@@ -273,20 +273,20 @@ echo "SSL_PORT=$SSL_PORT"
 echo "AJP_PORT=$AJP_PORT"
 echo "SHUTDOWN_PORT=$SHUTDOWN_PORT"
 echo "================================================"
-''' >> ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
-chmod +x ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
+''' >> ~/"${CATALINA_BASE_NAME}"/bin/setenv.sh
+chmod +x ~/"${CATALINA_BASE_NAME}"/bin/setenv.sh
 
 # server.xml 복사
-rm -f ~/"${CATALINA_BASE_MAME}"/conf/server.xml
+rm -f ~/"${CATALINA_BASE_NAME}"/conf/server.xml
 wget -P \
-  ~/"${CATALINA_BASE_MAME}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
+  ~/"${CATALINA_BASE_NAME}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
 
 # tomcat database 설정
-mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
-  mkdir -p ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost; \
+mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"; \
+  mkdir -p ~/"${CATALINA_BASE_NAME}"/conf/Catalina/localhost; \
 #   echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 #   <!-- 1. 소스 경로 -->
-# <Context path=\"\" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"/ reloadable=\"false\"
+# <Context path=\"\" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"/ reloadable=\"false\"
 #          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
 # <!-- 2. DB 정보 -->
 #     <Resource name=\"jdbc/gneerbankDS\" auth=\"Container\"
@@ -298,22 +298,22 @@ mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
 #               username=\"gneerbank\"
 #               password=\"gneerbank\"
 #               maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
-# </Context>" > ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost/ROOT.xml
+# </Context>" > ~/"${CATALINA_BASE_NAME}"/conf/Catalina/localhost/ROOT.xml
 
-SOURCE_DIR="webapps"
-CATALINA_HOME_NAME="apache-tomcat-7.0.90"
-CATALINA_BASE_MAME="gneerbank"
+SOURCE_DIR=webapps
+CATALINA_HOME_NAME=apache-tomcat-7.0.90
+CATALINA_BASE_NAME=gneerbank
 
 # Install tomcat7
 cd ~; \
 wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_HOME_NAME}".tar.gz; \
   tar xvfz "${CATALINA_HOME_NAME}".tar.gz; \
-  cp -ar "${CATALINA_HOME_NAME}" "${CATALINA_BASE_MAME}"; \
+  cp -ar "${CATALINA_HOME_NAME}" "${CATALINA_BASE_NAME}"; \
   rm -f "${CATALINA_HOME_NAME}".tar.gz
 
 # 톰캣 환경 변수 설정
-echo "export CATALINA_BASE=${HOME}/${CATALINA_BASE_NAME}" >> ~/"${CATALINA_HOME_NAME}"/bin/setenv.sh
-echo "export CATALINA_HOME=${HOME}/${CATALINA_HOME_MAME}" >> ~/"${CATALINA_HOME_NAME}"/bin/setenv.sh
+echo "export CATALINA_BASE=$HOME/$CATALINA_BASE_NAME" >> "$HOME/$CATALINA_BASE_NAME/bin/setenv.sh"
+echo "export CATALINA_HOME=$HOME/$CATALINA_HOME_NAME" >> "$HOME/$CATALINA_BASE_NAME/bin/setenv.sh"
 
 echo '''export DATE=`date +%Y%m%d%H%M%S`
 #[2] TOMCAT Port & values
@@ -375,20 +375,20 @@ echo "SSL_PORT=$SSL_PORT"
 echo "AJP_PORT=$AJP_PORT"
 echo "SHUTDOWN_PORT=$SHUTDOWN_PORT"
 echo "================================================"
-''' >> ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
-chmod +x ~/"${CATALINA_BASE_MAME}"/bin/setenv.sh
+''' >> ~/"${CATALINA_BASE_NAME}"/bin/setenv.sh
+chmod +x ~/"${CATALINA_BASE_NAME}"/bin/setenv.sh
 
 # server.xml 복사
-rm -f ~/"${CATALINA_BASE_MAME}"/conf/server.xml
+rm -f ~/"${CATALINA_BASE_NAME}"/conf/server.xml
 wget -P \
-  ~/"${CATALINA_BASE_MAME}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
+  ~/"${CATALINA_BASE_NAME}"/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
 
 # tomcat database 설정
-mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
-  mkdir -p ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost; \
+mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"; \
+  mkdir -p ~/"${CATALINA_BASE_NAME}"/conf/Catalina/localhost; \
   echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
   <!-- 1. 소스 경로 -->
-<Context path=\"\" docBase="\"${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"\" reloadable=\"false\"
+<Context path=\"\" docBase="\"${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"\" reloadable=\"false\"
          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
 <!-- 2. DB 정보 -->
     <Resource name=\"jdbc/elLetterMDS\" auth=\"Container\"
@@ -400,13 +400,13 @@ mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"; \
               username=\"class_user_stage\"
               password=\"class@1904\"
               maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
-</Context>" > ~/"${CATALINA_BASE_MAME}"/conf/Catalina/localhost/ROOT.xml
+</Context>" > ~/"${CATALINA_BASE_NAME}"/conf/Catalina/localhost/ROOT.xml
 
 # gclog 디렉토리 생성
-mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_MAME}"/logs/gclog
+mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"/logs/gclog
 
 # mysql-connector 복사
-wget -P ~/"${CATALINA_BASE_MAME}"/lib https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-5.1.26-bin.jar
+wget -P ~/"${CATALINA_BASE_NAME}"/lib https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-5.1.26-bin.jar
 
 # tomcat start
-"${CATALINA_BASE_MAME}"/bin/startup.sh
+"${CATALINA_BASE_NAME}"/bin/startup.sh
