@@ -217,21 +217,18 @@ wget -P \
 # tomcat database
 mkdir ~/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"; \
   mkdir -p ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost; \
-  bash -c "cat << EOF > ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost/ROOT.xml
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!-- 1. 소스 경로 -->
-<Context path="" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"/ reloadable="false"
-         privileged="true" antiResourceLocking="false" antiJARLocking="false">
+  echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+  <!-- 1. 소스 경로 -->
+<Context path="" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_HOME_DIR}"/ reloadable=\"false\"
+         privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
 <!-- 2. DB 정보 -->
-    <Resource name="jdbc/gneerbankDS" auth="Container"
-              type="javax.sql.DataSource"
-              driverClassName="com.mysql.jdbc.Driver"
-              validationQuery="SELECT 1"
-              validationInterval="30000"
+    <Resource name=\"jdbc/gneerbankDS\" auth=\"Container\"
+              type=\"javax.sql.DataSource\"
+              driverClassName=\"com.mysql.jdbc.Driver\"
+              validationQuery=\"SELECT 1\"
+              validationInterval=\"30000\"
               url=""
-              username="gneerbank"
-              password="gneerbank"
-              maxActive="100" maxIdle="50" initialSize="30" maxWait="-1"/>
-</Context>
-EOF"
+              username=\"gneerbank\"
+              password=\"gneerbank\"
+              maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
+</Context>" > ~/"${CATALINA_HOME_DIR}"/conf/Catalina/localhost/ROOT.xml
