@@ -1,5 +1,5 @@
-provider “ncloud” {
-access_key = "ACCESS KEY"
-secret_key = "SECET KEY"
+provider "ncloud" {
+access_key = ""
+secret_key = ""
 region = "Region"
 }

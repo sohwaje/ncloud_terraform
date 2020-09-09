@@ -347,5 +347,8 @@ ExecStop=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/shutdown.sh
 WantedBy=multi-user.target
 EOF"
 
+# Create test index.jsp
+echo "NCloud TEST PAGE-$HOSTNAME" | sudo tee -a /home/${TOMCAT_USER}/${SOURCE_DIR}/${CATALINA_BASE_NAME}/index.jsp
+
 # tomcat start
 sudo systemctl daemon-reload && sudo systemctl start tomcat && sudo systemctl enable tomcat
