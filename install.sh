@@ -348,6 +348,4 @@ WantedBy=multi-user.target
 EOF"
 
 # tomcat start
-sudo systemctl daemon-reload
-sudo systemctl enable tomcat.service
-sudo systemctl start tomcat.serivce
+sudo systemctl daemon-reload && sudo systemctl start tomcat.service && sudo systemctl enable tomcat.service
