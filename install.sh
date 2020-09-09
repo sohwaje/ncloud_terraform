@@ -332,7 +332,7 @@ sudo chown -R ${TOMCAT_USER}:${TOMCAT_USER} /home/${TOMCAT_USER}
 
 # add systemctl tomcat service
 sudo bash -c "cat << EOF > /etc/systemd/system/tomcat.service
-Unit]
+[Unit]
 Description=tomcat7
 After=network.target syslog.target
 
