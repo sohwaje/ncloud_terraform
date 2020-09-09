@@ -174,7 +174,7 @@ sudo wget -P \
   sudo cp /tmp/node_exporter-1.0.1.linux-amd64/node_exporter /usr/local/bin; \
   sudo rm -rf /tmp/node_exporter*
 
-# add systemctl service
+# add systemctl node_exporter service
 sudo bash -c "cat << EOF > /etc/systemd/system/node_exporter.service
 [Unit]
 Description=Node Exporter
@@ -330,5 +330,24 @@ sudo curl -L "https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-conn
 # Change permission tomcat Directory
 sudo chown -R ${TOMCAT_USER}:${TOMCAT_USER} /home/${TOMCAT_USER}
 
+# add systemctl tomcat service
+sudo bash -c "cat << EOF > /etc/systemd/system/tomcat.service
+Unit]
+Description=tomcat7
+After=network.target syslog.target
+
+[Service]
+Type=forking
+User=${TOMCAT_USER}
+Group=${TOMCAT_USER}
+ExecStart=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/startup.sh
+ExecStop=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+
 # tomcat start
-sudo -u $TOMCAT_USER /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/startup.sh
+sudo systemctl daemon-reload
+sudo systemctl enable tomcat.service
+sudo systemctl start tomcat.serivce
