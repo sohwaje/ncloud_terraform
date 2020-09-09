@@ -212,10 +212,10 @@ sudo wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALIN
  sudo rm -f "${CATALINA_HOME_NAME}".tar.gz
 
 # 톰캣 환경 변수 설정
-sudo echo "export CATALINA_BASE=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}" >> /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh
-sudo echo "export CATALINA_HOME=/home/${TOMCAT_USER}/${CATALINA_HOME_NAME}" >> /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh
+sudo bash -c "echo 'export CATALINA_BASE=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}' >> /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh"
+sudo bash -c "echo 'export CATALINA_HOME=/home/${TOMCAT_USER}/${CATALINA_HOME_NAME}' >> /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh"
 
-sudo echo '''export DATE=`date +%Y%m%d%H%M%S`
+echo '''export DATE=`date +%Y%m%d%H%M%S`
 #[2] TOMCAT Port & values
 # Tomcat Port 설정
 export PORT_OFFSET=0
@@ -275,7 +275,7 @@ echo "SSL_PORT=$SSL_PORT"
 echo "AJP_PORT=$AJP_PORT"
 echo "SHUTDOWN_PORT=$SHUTDOWN_PORT"
 echo "================================================"
-''' >> /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh
+''' | sudo tee -a /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh
 sudo chmod +x /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh
 
 # server.xml 복사
@@ -305,7 +305,7 @@ sudo wget -P \
 # tomcat database 설정
 sudo mkdir -p /home/${TOMCAT_USER}/${SOURCE_DIR}/${CATALINA_BASE_NAME}; \
  sudo mkdir -p /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/conf/Catalina/localhost; \
- sudo echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
   <!-- 1. 소스 경로 -->
 <Context path=\"\" docBase="\"/home/${TOMCAT_USER}"/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"\" reloadable=\"false\"
          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
@@ -319,7 +319,7 @@ sudo mkdir -p /home/${TOMCAT_USER}/${SOURCE_DIR}/${CATALINA_BASE_NAME}; \
               username=\"class_user_stage\"
               password=\"class@1904\"
               maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
-</Context>" > /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/conf/Catalina/localhost/ROOT.xml
+</Context>" | sudo tee -a /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/conf/Catalina/localhost/ROOT.xml
 
 # gclog 디렉토리 생성
 sudo mkdir -p /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/logs/gclog
@@ -331,4 +331,4 @@ sudo curl -L "https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-conn
 sudo chown -R ${TOMCAT_USER}:${TOMCAT_USER} /home/${TOMCAT_USER}
 
 # tomcat start
-sudo -p -s /bin/sh $TOMCAT_USER $CATALINA_BASE_NAME/bin/startup.sh
+sudo -u $TOMCAT_USER /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/startup.sh
