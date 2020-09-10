@@ -206,14 +206,14 @@ sudo groupadd $TOMCAT_USER
 sudo useradd -g $TOMCAT_USER -s /usr/sbin/nologin/ $TOMCAT_USER
 # Install tomcat7
 cd /home/$TOMCAT_USER; \
-sudo wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/"${CATALINA_HOME_NAME}".tar.gz; \
- sudo tar xvfz "${CATALINA_HOME_NAME}".tar.gz; \
- sudo cp -ar "${CATALINA_HOME_NAME}" "${CATALINA_BASE_NAME}"; \
- sudo rm -f "${CATALINA_HOME_NAME}".tar.gz
+sudo wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/$CATALINA_HOME_NAME.tar.gz; \
+ sudo tar xvfz "$CATALINA_HOME_NAME".tar.gz; \
+ sudo cp -ar "$CATALINA_HOME_NAME" "$CATALINA_BASE_NAME"; \
+ sudo rm -f "$CATALINA_HOME_NAME".tar.gz
 
 # 톰캣 환경 변수 설정
-sudo bash -c "echo 'export CATALINA_BASE=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}' >> /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh"
-sudo bash -c "echo 'export CATALINA_HOME=/home/${TOMCAT_USER}/${CATALINA_HOME_NAME}' >> /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh"
+sudo bash -c "echo 'export CATALINA_BASE=/home/$TOMCAT_USER/$CATALINA_BASE_NAME' >> /home/$TOMCAT_USER}/$CATALINA_BASE_NAME/bin/setenv.sh"
+sudo bash -c "echo 'export CATALINA_HOME=/home/$TOMCAT_USER/$CATALINA_HOME_NAME' >> /home/$TOMCAT_USER}/$CATALINA_BASE_NAME/bin/setenv.sh"
 
 echo '''export DATE=`date +%Y%m%d%H%M%S`
 #[2] TOMCAT Port & values
@@ -275,39 +275,20 @@ echo "SSL_PORT=$SSL_PORT"
 echo "AJP_PORT=$AJP_PORT"
 echo "SHUTDOWN_PORT=$SHUTDOWN_PORT"
 echo "================================================"
-''' | sudo tee -a /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh
-sudo chmod +x /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/setenv.sh
+''' | sudo tee -a "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/setenv.sh"
+sudo chmod +x "/home/$TOMCAT_USER}/$CATALINA_BASE_NAME/bin/setenv.sh"
 
 # server.xml 복사
-sudo rm -f /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/conf/server.xml
+sudo rm -f "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf/server.xml"
 sudo wget -P \
-  /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
+  "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml"
 
 # tomcat database 설정
-# $USER mkdir -p ~/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"; \
-#   $USER mkdir -p ~/"${CATALINA_BASE_NAME}"/conf/Catalina/localhost; \
-#   echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
-#   <!-- 1. 소스 경로 -->
-# <Context path=\"\" docBase="${HOME}"/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"/ reloadable=\"false\"
-#          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
-# <!-- 2. DB 정보 -->
-#     <Resource name=\"jdbc/gneerbankDS\" auth=\"Container\"
-#               type=\"javax.sql.DataSource\"
-#               driverClassName=\"com.mysql.jdbc.Driver\"
-#               validationQuery=\"SELECT 1\"
-#               validationInterval=\"30000\"
-#               url=""
-#               username=\"gneerbank\"
-#               password=\"gneerbank\"
-#               maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
-# </Context>" > ~/"${CATALINA_BASE_NAME}"/conf/Catalina/localhost/ROOT.xml
-
-# tomcat database 설정
-sudo mkdir -p /home/${TOMCAT_USER}/${SOURCE_DIR}/${CATALINA_BASE_NAME}; \
- sudo mkdir -p /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/conf/Catalina/localhost; \
+sudo mkdir -p "/home/$TOMCAT_USER/$SOURCE_DIR/$CATALINA_BASE_NAME"; \
+ sudo mkdir -p "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf/Catalina/localhost"; \
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
   <!-- 1. 소스 경로 -->
-<Context path=\"\" docBase="\"/home/${TOMCAT_USER}"/"${SOURCE_DIR}"/"${CATALINA_BASE_NAME}"\" reloadable=\"false\"
+<Context path=\"\" docBase="\"/home/$TOMCAT_USER"/"$SOURCE_DIR"/"$CATALINA_BASE_NAME"\" reloadable=\"false\"
          privileged=\"true\" antiResourceLocking=\"false\" antiJARLocking=\"false\">
 <!-- 2. DB 정보 -->
     <Resource name=\"jdbc/elLetterMDS\" auth=\"Container\"
@@ -319,16 +300,16 @@ echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
               username=\"class_user_stage\"
               password=\"class@1904\"
               maxActive=\"100\" maxIdle=\"50\" initialSize=\"30\" maxWait=\"-1\"/>
-</Context>" | sudo tee -a /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/conf/Catalina/localhost/ROOT.xml
+</Context>" | sudo tee -a "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf/Catalina/localhost/ROOT.xml"
 
 # gclog 디렉토리 생성
-sudo mkdir -p /home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/logs/gclog
+sudo mkdir -p "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/logs/gclog"
 
 # mysql-connector 복사
-sudo curl -L "https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-8.0.21.jar?raw=true" -o /home/${TOMCAT_USER}/${CATALINA_HOME_NAME}/lib/mysql-connector-java-8.0.21.jar
+sudo curl -L "https://github.com/sohwaje/ncloud_terraform/blob/master/mysql-connector-java-8.0.21.jar?raw=true" -o "/home/$TOMCAT_USER/$CATALINA_HOME_NAME/lib/mysql-connector-java-8.0.21.jar"
 
 # Change permission tomcat Directory
-sudo chown -R ${TOMCAT_USER}:${TOMCAT_USER} /home/${TOMCAT_USER}
+sudo chown -R $TOMCAT_USER:$TOMCAT_USER /home/$TOMCAT_USER
 
 # add systemctl tomcat service
 sudo bash -c "cat << EOF > /etc/systemd/system/tomcat.service
@@ -338,17 +319,17 @@ After=network.target syslog.target
 
 [Service]
 Type=forking
-User=${TOMCAT_USER}
-Group=${TOMCAT_USER}
-ExecStart=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/startup.sh
-ExecStop=/home/${TOMCAT_USER}/${CATALINA_BASE_NAME}/bin/shutdown.sh
+User=$TOMCAT_USER
+Group=$TOMCAT_USER
+ExecStart=/home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/startup.sh
+ExecStop=/home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/shutdown.sh
 
 [Install]
 WantedBy=multi-user.target
 EOF"
 
 # Create test index.jsp
-echo "NCloud TEST PAGE-$HOSTNAME" | sudo tee -a /home/${TOMCAT_USER}/${SOURCE_DIR}/${CATALINA_BASE_NAME}/index.jsp
+echo "NCloud TEST PAGE-$HOSTNAME" | sudo tee -a "/home/$TOMCAT_USER/$SOURCE_DIR/$CATALINA_BASE_NAME/index.jsp"
 
 # tomcat start
 sudo systemctl daemon-reload && sudo systemctl start tomcat && sudo systemctl enable tomcat
