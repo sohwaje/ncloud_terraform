@@ -281,7 +281,7 @@ sudo chmod +x "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/setenv.sh"
 # server.xml 복사
 sudo rm -f "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf/server.xml"
 sudo wget -P \
-  "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml"
+  "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf" https://raw.githubusercontent.com/sohwaje/ncloud_terraform/master/server.xml
 
 # tomcat database 설정
 sudo mkdir -p "/home/$TOMCAT_USER/$SOURCE_DIR/$CATALINA_BASE_NAME"; \
