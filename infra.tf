@@ -33,20 +33,28 @@ resource "ncloud_server" "server" {
 
 ### LB create
 resource "ncloud_load_balancer" "lb" {
-  load_balancer_name = "ttf_webinar_lb"
-  load_balancer_algorithm_type_code = "RR"
-  load_balancer_description = "tf_webinar_lb"
-  load_balancer_rule_list = [
-{
-  protocol_type_code = "HTTP"
-  load_balancer_port = 80
-  server_port = 8080
-  l7_health_check_path = "/"
-},
-]
+  name = "ttf_webinar_lb"
+  algorithm_type = "RR"
+  description = "tf_webinar_lb"
+
+  rule_list {
+        protocol_type        = "HTTP"
+        load_balancer_port   = 80
+        server_port          = 8080
+        l7_health_check_path = "/"
+      }
+
+  rule_list {
+        protocol_type        = "HTTPS"
+        load_balancer_port   = 443
+        server_port          = 443
+        l7_health_check_path = "/"
+        certificate_name     = "cert"
+      }
+
   server_instance_no_list = ["${ncloud_server.server.*.id[0]}",
   "${ncloud_server.server.*.id[1]}"]
-  internet_line_type_code = "PUBLC"
-  network_usage_type_code = "PBLIP"
-  region_no = "1"
+  internet_line_type = "PUBLC"
+  network_usage_type = "PBLIP"
+  region = "KR"
 }
