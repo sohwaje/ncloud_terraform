@@ -212,8 +212,8 @@ sudo wget https://archive.apache.org/dist/tomcat/tomcat-7/v7.0.90/bin/$CATALINA_
  sudo rm -f "$CATALINA_HOME_NAME".tar.gz
 
 # 톰캣 환경 변수 설정
-sudo bash -c "echo 'export CATALINA_BASE=/home/$TOMCAT_USER/$CATALINA_BASE_NAME' >> /home/$TOMCAT_USER}/$CATALINA_BASE_NAME/bin/setenv.sh"
-sudo bash -c "echo 'export CATALINA_HOME=/home/$TOMCAT_USER/$CATALINA_HOME_NAME' >> /home/$TOMCAT_USER}/$CATALINA_BASE_NAME/bin/setenv.sh"
+sudo bash -c "echo 'export CATALINA_BASE=/home/$TOMCAT_USER/$CATALINA_BASE_NAME' >> /home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/setenv.sh"
+sudo bash -c "echo 'export CATALINA_HOME=/home/$TOMCAT_USER/$CATALINA_HOME_NAME' >> /home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/setenv.sh"
 
 echo '''export DATE=`date +%Y%m%d%H%M%S`
 #[2] TOMCAT Port & values
@@ -276,7 +276,7 @@ echo "AJP_PORT=$AJP_PORT"
 echo "SHUTDOWN_PORT=$SHUTDOWN_PORT"
 echo "================================================"
 ''' | sudo tee -a "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/setenv.sh"
-sudo chmod +x "/home/$TOMCAT_USER}/$CATALINA_BASE_NAME/bin/setenv.sh"
+sudo chmod +x "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/bin/setenv.sh"
 
 # server.xml 복사
 sudo rm -f "/home/$TOMCAT_USER/$CATALINA_BASE_NAME/conf/server.xml"
